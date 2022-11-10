@@ -1,7 +1,8 @@
 let Data_checked = require('../model/data_checked')
 let Data_not_checked = require('../model/data_not_checked')
+let Hotmail = require('../model/hotmail')
 module.exports = {
-    add_data: async function(req, res) {
+    add_hotmail: async function(req, res) {
         console.log('---API add data checked ------')
         try{
             let finalNumber = req.body.finalNumber
@@ -77,7 +78,7 @@ module.exports = {
             })
         }
     },
-    get_data: async function(req, res) {
+    get_hotmail: async function(req, res) {
         console.log("---API get data checked---")
         try{
             let filter = {
@@ -110,43 +111,4 @@ module.exports = {
             })
         }
     },
-    get_bin: async function(req, res){
-        console.log("----API GET Bin---");
-        try{
-            let arrBin = []
-            let getBin = await Data_checked.find()
-            for(let i = 0; i < getBin.length; i++){
-                arrBin.push(getBin[i].bin)
-            }
-            arrBin = [...new Set(arrBin)]
-            res.status(200).json({
-                message: "Lay du lieu thanh cong.",
-                data: arrBin
-            })
-        }catch(ex){
-            res.status(400).json({
-                message: ex.message
-            })
-        }
-    },
-    get_nation: async function(req, res){
-        console.log("----API GET Nation---");
-        try{
-            let arrNation = []
-            let getNation = await Data_checked.find()
-            for(let i = 0; i < getNation.length; i++){
-                arrNation.push(getNation[i].nation)
-            }
-            arrNation = [...new Set(arrNation)]
-            res.status(200).json({
-                message: "Lay du lieu thanh cong.",
-                data: arrNation
-            })
-        }catch(ex){
-            res.status(400).json({
-                message: ex.message
-            })
-        }
-    },
-    
 }
