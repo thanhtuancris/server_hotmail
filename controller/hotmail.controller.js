@@ -1,10 +1,11 @@
 let Data_checked = require('../model/data_checked')
 let Data_not_checked = require('../model/data_not_checked')
 let Hotmail = require('../model/hotmail')
+let Account = require('../model/account')
 module.exports = {
-    add_hotmail: async function(req, res) {
+    add_hotmail: async function (req, res) {
         console.log('---SERVER HOTMAIL -- API ADD hotmail------')
-        try{
+        try {
             let mail = req.body.mail
             let password = req.body.password
             let code2fa = req.body.code2fa
@@ -31,60 +32,148 @@ module.exports = {
                 mail: mail,
             }
             let checkExists = await Hotmail.findOne(filter)
-            if(checkExists == null){
+            if (checkExists == null) {
                 let save = await newData.save()
-                if(save !== null){
+                if (save !== null) {
                     res.status(200).json({
                         message: 'Them du lieu thanh cong.',
                     })
-                }else{
+                } else {
                     res.status(400).json({
                         message: 'Them du lieu that bai.',
                     })
                 }
-            }else{
+            } else {
                 res.status(400).json({
                     message: 'Du lieu da ton tai.',
                 })
             }
-            
-        }catch(ex){
+
+        } catch (ex) {
             res.status(400).json({
                 message: ex.message
             })
         }
     },
-    get_hotmail: async function(req, res) {
+    get_hotmail: async function (req, res) {
         console.log('---SERVER HOTMAIL -- API GET hotmail------')
-        try{
+        try {
             let filter = {
                 status: {
                     $ne: 10
                 }
             }
-            if(req.body.status){
+            if (req.body.status) {
                 filter.status = req.body.status
             }
-            
+
             let rs_data = await Hotmail.findOne(filter)
-            if(rs_data !== null){
-                let updateStatus = await Hotmail.findOneAndUpdate({mail: rs_data.mail}, {status: 10}, {new: true})
+            if (rs_data !== null) {
+                let updateStatus = await Hotmail.findOneAndUpdate({
+                    mail: rs_data.mail
+                }, {
+                    status: 10
+                }, {
+                    new: true
+                })
                 res.status(200).json({
                     message: 'Lay du lieu thanh cong.',
                     data: updateStatus
                 })
-            }else{
+            } else {
                 res.status(400).json({
                     message: 'Lay du lieu that bai'
                 })
             }
-        }catch(ex){
+        } catch (ex) {
             res.status(400).json({
                 message: ex.message
             })
         }
     },
-    update_status: async function(req, res){
+    update_hotmail: async function (req, res) {
+        console.log('---SERVER HOTMAIL -- API update hotmail------')
+        try {
+            let mail = req.body.mail
+            let tags = req.body.tags
+            let filter = {
+                mail: mail
+            }
+            let update = {
+                $push: {
+                    tags: tags
+                }
+            }
+            let rs_update = await Hotmail.findOneAndUpdate(filter, update, {new: true})
+            if(rs_update !== null){
+                res.status(200).json({
+                    message: 'Update thanh cong',
+                })
+            }else{
+                res.status(400).json({
+                    message: 'Update that bai',
+                })
+            }
+        } catch (ex) {
+            res.status(400).json({
+                message: ex.message
+            })
+        }
+    },
+    hotmail_analyst: async function (req, res) {
+        console.log('---SERVER HOTMAIL -- API hotmail analyst------')
+        try {
+            let token = req.body.token
+            let checkAccount = await Account.findOne({
+                token: token
+            })
+            if (checkAccount !== null) {
+                if (checkAccount.permission === 10) {
+                    let filter = {
 
+                    }
+                    if (req.body.mail) {
+                        filter.mail = new RegExp(req.body.mail, "i")
+                    }
+                    if (req.body.isdelete) {
+                        filter.isdelete = req.body.isdelete
+                    }
+                    if (req.body.status) {
+                        filter.status = req.body.status
+                    }
+                    if (req.body.tags) {
+                        filter.tags = new RegExp(req.body.tags, "i")
+                    }
+                    let totalNot2Fa = await Hotmail.countDocuments({status: 1})
+                    let totalAdded2Fa = await Hotmail.countDocuments({status: 2})
+                    let totalAdd2FaFail = await Hotmail.countDocuments({status: 3})
+                    let totalFilter = await Hotmail.countDocuments(filter)
+                    let totalHotmail = await Hotmail.countDocuments()
+
+                    res.status(200).json({
+                        message: 'Lay du lieu thanh cong',
+                        data: {
+                            totalHotmail: totalHotmail,
+                            totalFilter: totalFilter,
+                            totalNot2Fa: totalNot2Fa,
+                            totalAdded2Fa: totalAdded2Fa,
+                            totalAdd2FaFail: totalAdd2FaFail
+                        }
+                    })
+                } else {
+                    res.status(400).json({
+                        message: 'Khong co quyen thuc thi'
+                    })
+                }
+            } else {
+                res.status(400).json({
+                    message: 'Het phien dang nhap'
+                })
+            }
+        } catch (ex) {
+            res.status(400).json({
+                message: ex.message
+            })
+        }
     }
 }

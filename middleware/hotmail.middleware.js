@@ -20,4 +20,13 @@ module.exports = {
         }
         next()
     },
+    hotmail_analyst: function(req, res, next) {
+        if(!req.body.token){
+            res.status(400).json({
+                message: 'Thieu token'
+            })
+            return
+        }
+        next()
+    }
 }
