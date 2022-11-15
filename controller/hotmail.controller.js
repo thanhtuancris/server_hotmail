@@ -87,6 +87,37 @@ module.exports = {
             })
         }
     },
+    get_hotmail_2fa: async function (req, res) {
+        console.log('---SERVER HOTMAIL -- API GET hotmail new------')
+        try {
+            let filter = {
+                status: 2
+            }
+
+            let rs_data = await Hotmail.findOne(filter)
+            if (rs_data !== null) {
+                let updateStatus = await Hotmail.findOneAndUpdate({
+                    mail: rs_data.mail
+                }, {
+                    status: 10
+                }, {
+                    new: true
+                })
+                res.status(200).json({
+                    message: 'Lay du lieu thanh cong.',
+                    data: updateStatus
+                })
+            } else {
+                res.status(400).json({
+                    message: 'Lay du lieu that bai'
+                })
+            }
+        } catch (ex) {
+            res.status(400).json({
+                message: ex.message
+            })
+        }
+    },
     update_hotmail: async function (req, res) {
         console.log('---SERVER HOTMAIL -- API update hotmail------')
         try {
