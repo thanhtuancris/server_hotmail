@@ -1,6 +1,6 @@
 const mongoose = require("mongoose")
 
-const hotmailSchema = new mongoose.Schema({
+const hotmail2FaSchema = new mongoose.Schema({
     mail: String,
     password: String,
     code2fa: String,
@@ -15,4 +15,4 @@ const hotmailSchema = new mongoose.Schema({
     timeUpdate: Date,
 })
 
-module.exports = mongoose.model("hotmails", hotmailSchema)
+module.exports = mongoose.model("hotmail2FAs", hotmail2FaSchema)

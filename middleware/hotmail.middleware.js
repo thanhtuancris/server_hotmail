@@ -1,5 +1,5 @@
 module.exports = {
-    add_hotmail:  function(req, res, next) {
+    add_hotmail2fa:  function(req, res, next) {
         if(!req.body.mail){
             res.status(400).json({
                 message: 'Thieu mail'
@@ -12,6 +12,18 @@ module.exports = {
             })
             return
         }
+        // if(!req.body.code2fa){
+        //     res.status(400).json({
+        //         message: 'Thieu code2fa'
+        //     })
+        //     return
+        // }
+        // if(!req.body.mailReco){
+        //     res.status(400).json({
+        //         message: 'Thieu mailReco'
+        //     })
+        //     return
+        // }
         if(!req.body.status){
             res.status(400).json({
                 message: 'Thieu status'

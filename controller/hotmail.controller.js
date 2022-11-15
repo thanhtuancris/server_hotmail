@@ -1,11 +1,12 @@
 let Data_checked = require('../model/data_checked')
 let Data_not_checked = require('../model/data_not_checked')
-let Hotmail = require('../model/hotmail')
+let Hotmailnew = require('../model/hotmailnew')
+let Hotmail2FA = require('../model/hotmail_2fa')
 let Account = require('../model/account')
 let fs = require('fs')
 module.exports = {
-    add_hotmail: async function (req, res) {
-        console.log('---SERVER HOTMAIL -- API Add hotmail------')
+    add_hotmail_2fa: async function (req, res) {
+        console.log('---SERVER HOTMAIL -- API Add hotmail 2fa------')
         try {
             let mail = req.body.mail
             let password = req.body.password
@@ -16,7 +17,7 @@ module.exports = {
             let dob = req.body.dob
             let status = req.body.status
             let tags = req.body.tags
-            let newData = new Hotmail({
+            let newData = new Hotmail2FA({
                 mail: mail,
                 password: password,
                 code2fa: code2fa ? code2fa : "",
@@ -32,7 +33,7 @@ module.exports = {
             let filter = {
                 mail: mail,
             }
-            let checkExists = await Hotmail.findOne(filter)
+            let checkExists = await Hotmail2FA.findOne(filter)
             if (checkExists == null) {
                 let save = await newData.save()
                 if (save !== null) {
@@ -63,9 +64,9 @@ module.exports = {
                 status: 1
             }
 
-            let rs_data = await Hotmail.findOne(filter)
+            let rs_data = await Hotmailnew.findOne(filter)
             if (rs_data !== null) {
-                let updateStatus = await Hotmail.findOneAndUpdate({
+                let updateStatus = await Hotmailnew.findOneAndUpdate({
                     mail: rs_data.mail
                 }, {
                     status: 10
@@ -94,9 +95,9 @@ module.exports = {
                 status: 2
             }
 
-            let rs_data = await Hotmail.findOne(filter)
+            let rs_data = await Hotmail2FA.findOne(filter)
             if (rs_data !== null) {
-                let updateStatus = await Hotmail.findOneAndUpdate({
+                let updateStatus = await Hotmail2FA.findOneAndUpdate({
                     mail: rs_data.mail
                 }, {
                     status: 10
@@ -144,7 +145,7 @@ module.exports = {
                 //     tags: tags 
                 // }
             }
-            let rs_update = await Hotmail.findOneAndUpdate(filter, update, {new: true})
+            let rs_update = await Hotmail2FA.findOneAndUpdate(filter, update, {new: true})
             console.log(rs_update)
             console.log(update)
             if(rs_update !== null){
@@ -186,11 +187,11 @@ module.exports = {
                     if (req.body.tags) {
                         filter.tags = new RegExp(req.body.tags, "i")
                     }
-                    let totalNot2Fa = await Hotmail.countDocuments({status: 1})
-                    let totalAdded2Fa = await Hotmail.countDocuments({status: 2})
-                    let totalAdd2FaFail = await Hotmail.countDocuments({status: 3})
-                    let totalFilter = await Hotmail.countDocuments(filter)
-                    let totalHotmail = await Hotmail.countDocuments()
+                    let totalFilter = await Hotmail2FA.countDocuments(filter)
+                    let totalNot2Fa = await Hotmailnew.countDocuments({status: 1})
+                    let totalAdded2Fa = await Hotmail2FA.countDocuments({status: 2})
+                    let totalAdd2FaFail = await Hotmail2FA.countDocuments({status: 3})
+                    let totalHotmail = await Hotmail2FA.countDocuments()
 
                     res.status(200).json({
                         message: 'Lay du lieu thanh cong',
@@ -218,16 +219,14 @@ module.exports = {
             })
         }
     },
-    add_hotmail_white: async function (req, res){
-        console.log('---SERVER HOTMAIL -- API add hotmail white------')
+    add_hotmail_new: async function (req, res){
+        console.log('---SERVER HOTMAIL -- API add hotmail new------')
         try {
             let mail = req.body.mail
             let password = req.body.password
-            let mailReco = req.body.mailReco
-            let newMail = new Hotmail({
+            let newMail = new Hotmailnew({
                 mail: mail,
                 password: password,
-                mailReco: mailReco,
                 status: 1,
                 isdelete: 2,
                 timeAdd: new Date(),
@@ -261,7 +260,7 @@ module.exports = {
             let countSucess = 0, countFailed = 0
             var readData = fs.readFileSync('data.txt', 'utf8')
             var array = readData.split("\r\n")
-            let rs_data = await Hotmail.find()
+            let rs_data = await Hotmailnew.find()
             let map = new Map()
             for(let i = 0; i < rs_data.length; i++){
                 map.set(rs_data[i].mail, "key")
@@ -271,7 +270,7 @@ module.exports = {
                 let mail = rss_data[0]
                 let password = rss_data[1]
                
-                let newData = new Hotmail({
+                let newData = new Hotmailnew({
                     mail: mail,
                     password: password,
                     status: 1,
