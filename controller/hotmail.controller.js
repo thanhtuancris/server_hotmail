@@ -88,7 +88,7 @@ module.exports = {
         }
     },
     get_hotmail_2fa: async function (req, res) {
-        console.log('---SERVER HOTMAIL -- API GET hotmail new------')
+        console.log('---SERVER HOTMAIL -- API GET hotmail 2fa------')
         try {
             let filter = {
                 status: 2
