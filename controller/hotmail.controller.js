@@ -57,7 +57,7 @@ module.exports = {
         }
     },
     get_hotmail_new: async function (req, res) {
-        console.log('---SERVER HOTMAIL -- API GET hotmail------')
+        console.log('---SERVER HOTMAIL -- API GET hotmail new------')
         try {
             let filter = {
                 status: 1
