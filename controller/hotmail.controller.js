@@ -244,18 +244,10 @@ module.exports = {
                 let rss_data = array[i].split("|")
                 let mail = rss_data[0]
                 let password = rss_data[1]
-                let mailReco = rss_data[2]
-                let code2fa = rss_data[3]
-                let name = rss_data[4]
-                let dob = rss_data[5]
-
+               
                 let newData = new Hotmail({
                     mail: mail,
                     password: password,
-                    mailReco: mailReco,
-                    code2fa: code2fa,
-                    name: name,
-                    dob: dob,
                     timeAdd: new Date()
                 })
                 if(map.has(mail) == false){
