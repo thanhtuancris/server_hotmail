@@ -56,16 +56,11 @@ module.exports = {
             })
         }
     },
-    get_hotmail: async function (req, res) {
+    get_hotmail_new: async function (req, res) {
         console.log('---SERVER HOTMAIL -- API GET hotmail------')
         try {
             let filter = {
-                status: {
-                    $ne: 10
-                }
-            }
-            if (req.body.status) {
-                filter.status = req.body.status
+                status: 1
             }
 
             let rs_data = await Hotmail.findOne(filter)
@@ -248,6 +243,7 @@ module.exports = {
                 let newData = new Hotmail({
                     mail: mail,
                     password: password,
+                    status: 1,
                     timeAdd: new Date()
                 })
                 if(map.has(mail) == false){
