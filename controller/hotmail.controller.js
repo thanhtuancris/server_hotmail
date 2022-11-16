@@ -196,12 +196,12 @@ module.exports = {
                     let totalNot2Fa = await Hotmailnew.countDocuments({status: 1})
                     let totalAdded2Fa = await Hotmail2FA.countDocuments({status: 2})
                     let totalAdd2FaFail = await Hotmail2FA.countDocuments({status: 3})
-                    let totalHotmail = await Hotmail2FA.countDocuments()
+                    // let totalHotmail = await Hotmail2FA.countDocuments()
 
                     res.status(200).json({
                         message: 'Lay du lieu thanh cong',
                         data: {
-                            totalHotmail: totalHotmail,
+                            // totalHotmail: totalHotmail,
                             totalFilter: totalFilter,
                             totalNot2Fa: totalNot2Fa,
                             totalAdded2Fa: totalAdded2Fa,
