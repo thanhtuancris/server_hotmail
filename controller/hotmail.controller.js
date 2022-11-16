@@ -192,8 +192,9 @@ module.exports = {
                     if (req.body.tags) {
                         filter.tags = new RegExp(req.body.tags, "i")
                     }
-                    let totalFilter = await Hotmail2FA.countDocuments(filter)
+                    // let totalFilter = await Hotmail2FA.countDocuments(filter)
                     let totalNot2Fa = await Hotmailnew.countDocuments({status: 1})
+                    let totalGetNot2Fa = await Hotmailnew.countDocuments({status: 10})
                     let totalAdded2Fa = await Hotmail2FA.countDocuments({status: 2})
                     let totalAdd2FaFail = await Hotmail2FA.countDocuments({status: 3})
                     // let totalHotmail = await Hotmail2FA.countDocuments()
@@ -202,8 +203,9 @@ module.exports = {
                         message: 'Lay du lieu thanh cong',
                         data: {
                             // totalHotmail: totalHotmail,
-                            totalFilter: totalFilter,
+                            // totalFilter: totalFilter,
                             totalNot2Fa: totalNot2Fa,
+                            totalGetNot2Fa: totalGetNot2Fa,
                             totalAdded2Fa: totalAdded2Fa,
                             totalAdd2FaFail: totalAdd2FaFail
                         }
