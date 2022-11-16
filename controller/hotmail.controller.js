@@ -19,7 +19,7 @@ module.exports = {
             let status = req.body.status
             let tags = req.body.tags
             console.log(code2fa);
-            if(code2fa == "" || code2fa == undefined){
+            if(code2fa == "" || mailReco == ""){
                 status = 3
             }
             let newData = new Hotmail2FA({
