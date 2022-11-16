@@ -4,6 +4,7 @@ let Hotmailnew = require('../model/hotmailnew')
 let Hotmail2FA = require('../model/hotmail_2fa')
 let Account = require('../model/account')
 let fs = require('fs')
+const { ifError } = require('assert')
 module.exports = {
     add_hotmail_2fa: async function (req, res) {
         console.log('---SERVER HOTMAIL -- API Add hotmail 2fa------')
@@ -17,6 +18,10 @@ module.exports = {
             let dob = req.body.dob
             let status = req.body.status
             let tags = req.body.tags
+            console.log(code2fa);
+            if(code2fa == "" || code2fa == undefined){
+                status = 3
+            }
             let newData = new Hotmail2FA({
                 mail: mail,
                 password: password,
