@@ -306,5 +306,26 @@ module.exports = {
                 message: ex.message
             })
         }
+    },
+    test: async function(req,res){
+        let filter = {
+            status: 2,
+            code2fa: ""
+        }
+        let data = await Hotmail2FA.find(filter)
+
+        let update = {
+            status: 3
+        }
+        let rs = await Hotmail2FA.updateMany(filter, update)
+        if(rs !== null){
+            res.status(200).json({
+                message: "Update thanh cong"
+            })
+        }else{
+            res.status(400).json({
+                message: "Update that bai"
+            })
+        }
     }
 }

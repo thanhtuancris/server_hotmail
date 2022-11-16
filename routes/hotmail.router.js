@@ -9,5 +9,6 @@ router.post('/get-hotmail-new',hotmailController.get_hotmail_new);
 router.post('/get-hotmail-2fa',hotmailController.get_hotmail_2fa);
 router.post('/update-hotmail',hotmailController.update_hotmail);
 router.post('/hotmail-analyst', hotmailController.hotmail_analyst);
+router.post('/test', hotmailController.test);
 
 module.exports = router;
