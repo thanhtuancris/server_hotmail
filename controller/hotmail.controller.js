@@ -328,5 +328,56 @@ module.exports = {
             })
         }
     },
+    add_list_hotmail2FA: async function (req, res) {
+        console.log('---SERVER HOTMAIL--- API add list hotmail 2Fa------')
+        try {
+            let countSucess = 0, countFailed = 0
+            var readData = fs.readFileSync('data.txt', 'utf8')
+            var array = readData.split("\r\n")
+            let rs_data = await Hotmail2FA.find()
+            let map = new Map()
+            for(let i = 0; i < rs_data.length; i++){
+                map.set(rs_data[i].mail, "key")
+            }
+            for(let i = 0; i < array.length; i++){
+                let rss_data = array[i].split("|")
+                let mail = rss_data[0]
+                let password = rss_data[1]
+                let mailReco = rss_data[2]
+                let code2fa = rss_data[3]
+               
+                let newData = new Hotmail2FA({
+                    mail: mail,
+                    password: password,
+                    code2fa: code2fa,
+                    mailReco: mailReco,
+                    isdelete: 2,
+                    status: 2,
+                    timeAdd: new Date(),
+                })
+                if(map.has(mail) == false){
+                    map.set(mail, "key")
+                    let save = await newData.save()
+                    console.log('Saved  '+  array[i]);
+                    countSucess++
+                }else{
+                    console.log('Failed  '+  array[i]);
+                    countFailed++
+                }
+                if(i+1 == array.length){
+                    res.status(200).json({
+                        message: 'Them du lieu thanh cong.',
+                        total: array.length,
+                        countSucess: countSucess,
+                        countFailed: countFailed,
+                    })
+                }
+            }
+        } catch (ex) {
+            res.status(400).json({
+                message: ex.message
+            })
+        }
+    },
     
 }
