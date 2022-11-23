@@ -3,8 +3,9 @@ let Data_not_checked = require('../model/data_not_checked')
 let Hotmailnew = require('../model/hotmailnew')
 let Hotmail2FA = require('../model/hotmail_2fa')
 let Account = require('../model/account')
+let MsBuyer = require('../model/microsoft_buyer')
 let fs = require('fs')
-const { ifError } = require('assert')
+
 module.exports = {
     add_hotmail_2fa: async function (req, res) {
         console.log('---SERVER HOTMAIL -- API Add hotmail 2fa------')
@@ -308,25 +309,6 @@ module.exports = {
         }
     },
     test: async function(req,res){
-        let filter = {
-            status: 2,
-            code2fa: ""
-        }
-        let data = await Hotmail2FA.find(filter)
-
-        let update = {
-            status: 3
-        }
-        let rs = await Hotmail2FA.updateMany(filter, update)
-        if(rs !== null){
-            res.status(200).json({
-                message: "Update thanh cong"
-            })
-        }else{
-            res.status(400).json({
-                message: "Update that bai"
-            })
-        }
     },
     add_list_hotmail2FA: async function (req, res) {
         console.log('---SERVER HOTMAIL--- API add list hotmail 2Fa------')

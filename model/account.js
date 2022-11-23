@@ -4,7 +4,9 @@ const accountSchema = new mongoose.Schema({
     username: String,
     password: String,
     token: String,
-    permission: Number
+    key: String,
+    fullname: String,
+    permission: Number,
 })
 
 module.exports = mongoose.model("accounts", accountSchema)
