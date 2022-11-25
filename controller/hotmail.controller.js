@@ -5,6 +5,8 @@ let Hotmail2FA = require('../model/hotmail_2fa')
 let Account = require('../model/account')
 let MsBuyer = require('../model/microsoft_buyer')
 let fs = require('fs')
+const { ifError } = require('assert')
+
 
 module.exports = {
     add_hotmail_2fa: async function (req, res) {
@@ -309,6 +311,58 @@ module.exports = {
         }
     },
     test: async function(req,res){
+        try {
+            // //---xoa mail filter
+            // let deleteFilter = await Hotmail2FA.deleteMany({status: 4})
+            // if(deleteFilter){
+            //     res.status(200).json({
+            //         message: "Xoa thanh cong"
+            //     })
+            // }
+            // return
+            //----check trung du lieu
+            // let data = await Data_checked.find({useStatus: 1})
+            let hotmail = await Hotmail2FA.find()
+            // let buyer = await MsBuyer.find()
+            let arr = []
+            for(let i=0; i < hotmail.length; i++){
+                arr.push(hotmail[i]._id.toString())
+            }
+            let filterarr = arr.filter((item, index) => arr.indexOf(item) !== index);
+            
+            let newArr = [...new Set(arr)]
+            res.status(200).json({
+                arrBandau: arr.length,
+                trungdulieu: filterarr.length,
+                mangtrung: filterarr,
+                // newArr: newArr,
+            })
+            return
+            //---in ra du lieu con thieu
+            let rs_arr = [], count = 0
+            let arrMsBuyer = await MsBuyer.find()
+            let MapBuyer = new Map()
+            let MapHotMail = new Map()
+            let arrHotMail = await Hotmail2FA.find({status: 4})
+
+            for(let i=0; i<arrHotMail.length; i++){
+                MapHotMail.set(arrHotMail[i]._id.toString(), "key")
+            }
+            for(let i = 0; i < arrMsBuyer.length; i++){
+               if(!MapHotMail.has(arrMsBuyer[i].idMail)){
+                    rs_arr.push(arrMsBuyer[i].idMail)
+               }
+            }
+            res.status(200).json({
+                rs_arr: rs_arr,
+                count: rs_arr.length
+
+            })
+        } catch (ex) {
+            res.status(400).json({
+                message: ex.message
+            })
+        }
     },
     add_list_hotmail2FA: async function (req, res) {
         console.log('---SERVER HOTMAIL--- API add list hotmail 2Fa------')
