@@ -312,6 +312,40 @@ module.exports = {
     },
     test: async function(req,res){
         try {
+            let filter = {
+                status: {
+                    $ne: 4
+                }
+            }
+            let hotmail = await Hotmail2FA.find({status: 2})
+            let mapHotMail = new Map()
+            for(let i = 0; i < hotmail.length; i++){
+                mapHotMail.set(hotmail[i].mail, "key")
+            }
+            let countSucess = 0, countFailed = 0
+            var readData = fs.readFileSync('data.txt', 'utf8')
+            var array = readData.split("\r\n")
+            for(let i = 0; i < array.length; i++){
+                let rss_data = array[i].split("|")
+                let mail = rss_data[0]
+                if(mapHotMail.has(mail)){
+                    let deleteMail = await Hotmail2FA.findOneAndDelete({mail: mail})
+                    if(deleteMail){
+                        console.log('Xoa mail thanh cong ' + mail);
+                    }
+                    countSucess++
+                }else{
+                    countFailed++
+                }
+                if(i+1 == array.length){
+                    res.status(200).json({
+                        message: 'Them du lieu thanh cong.',
+                        total: array.length,
+                        countSucess: countSucess,
+                        countFailed: countFailed,
+                    })
+                }
+            }
             // //---xoa mail filter
             // let deleteFilter = await Hotmail2FA.deleteMany({status: 4})
             // if(deleteFilter){
@@ -322,21 +356,21 @@ module.exports = {
             // return
             //----check trung du lieu
             // let data = await Data_checked.find({useStatus: 1})
-            let hotmail = await Hotmail2FA.find()
-            // let buyer = await MsBuyer.find()
-            let arr = []
-            for(let i=0; i < hotmail.length; i++){
-                arr.push(hotmail[i]._id.toString())
-            }
-            let filterarr = arr.filter((item, index) => arr.indexOf(item) !== index);
+            // let hotmail = await Hotmail2FA.find()
+            // // let buyer = await MsBuyer.find()
+            // let arr = []
+            // for(let i=0; i < hotmail.length; i++){
+            //     arr.push(hotmail[i]._id.toString())
+            // }
+            // let filterarr = arr.filter((item, index) => arr.indexOf(item) !== index);
             
-            let newArr = [...new Set(arr)]
-            res.status(200).json({
-                arrBandau: arr.length,
-                trungdulieu: filterarr.length,
-                mangtrung: filterarr,
-                // newArr: newArr,
-            })
+            // let newArr = [...new Set(arr)]
+            // res.status(200).json({
+            //     arrBandau: arr.length,
+            //     trungdulieu: filterarr.length,
+            //     mangtrung: filterarr,
+            //     // newArr: newArr,
+            // })
             return
             //---in ra du lieu con thieu
             let rs_arr = [], count = 0
@@ -394,10 +428,10 @@ module.exports = {
                 if(map.has(mail) == false){
                     map.set(mail, "key")
                     let save = await newData.save()
-                    console.log('Saved  '+  array[i]);
+                    console.log('Saved  '+  mail);
                     countSucess++
                 }else{
-                    console.log('Failed  '+  array[i]);
+                    console.log('Failed  '+ mail);
                     countFailed++
                 }
                 if(i+1 == array.length){
