@@ -5,7 +5,6 @@ let Hotmail2FA = require('../model/hotmail_2fa')
 let Account = require('../model/account')
 let MsBuyer = require('../model/microsoft_buyer')
 let fs = require('fs')
-const { ifError } = require('assert')
 
 
 module.exports = {
@@ -131,38 +130,38 @@ module.exports = {
         console.log('---SERVER HOTMAIL -- API update hotmail------')
         try {
             let mail = req.body.mail
+            let password = req.body.password
             let code2fa = req.body.code2fa
+            let mailReco = req.body.mailReco
             let address = req.body.address
             let name = req.body.name
-            let dob = req.body.dob
-            let tags = req.body.tags
             let filter = {
                 mail: mail
             }
-            let findMail = await Hotmail.findOne(filter)
-            let update = {
-                timeUpdate: new Date(),
-                $set: {
+            let findMail = await Hotmail2FA.findOne(filter)
+            if(findMail !== null){
+                let update = {
+                    timeUpdate: new Date(),
                     code2fa: code2fa ? code2fa : findMail.code2fa,
+                    mailReco: mailReco ? mailReco : findMail.mailReco,
+                    password: password ? password : findMail.password,
                     name: name ? name : findMail.name,
                     address: address ? address: findMail.address,
-                    dob: dob ? dob : findMail.dob,
-                    tags: tags ? tags : findMail.tags,
-                },
-                // $push: {
-                //     tags: tags 
-                // }
-            }
-            let rs_update = await Hotmail2FA.findOneAndUpdate(filter, update, {new: true})
-            console.log(rs_update)
-            console.log(update)
-            if(rs_update !== null){
-                res.status(200).json({
-                    message: 'Update thanh cong',
-                })
+                }
+                let rs_update = await Hotmail2FA.findOneAndUpdate(filter, update, {new: true})
+                
+                if(rs_update !== null){
+                    res.status(200).json({
+                        message: 'Update thanh cong',
+                    })
+                }else{
+                    res.status(400).json({
+                        message: 'Update that bai',
+                    })
+                }
             }else{
                 res.status(400).json({
-                    message: 'Update that bai',
+                    message: 'Khong co du lieu',
                 })
             }
         } catch (ex) {
@@ -312,47 +311,48 @@ module.exports = {
     },
     test: async function(req,res){
         try {
-            let filter = {
-                status: {
-                    $ne: 4
-                }
+        //     let filter = {
+        //         status: {
+        //             $ne: 4
+        //         }
+        //     }
+        //     let hotmail = await Hotmail2FA.find({status: 2})
+        //     let mapHotMail = new Map()
+        //     for(let i = 0; i < hotmail.length; i++){
+        //         mapHotMail.set(hotmail[i].mail, "key")
+        //     }
+        //     let countSucess = 0, countFailed = 0
+        //     var readData = fs.readFileSync('data.txt', 'utf8')
+        //     var array = readData.split("\r\n")
+        //     for(let i = 0; i < array.length; i++){
+        //         let rss_data = array[i].split("|")
+        //         let mail = rss_data[0]
+        //         if(mapHotMail.has(mail)){
+        //             let deleteMail = await Hotmail2FA.findOneAndDelete({mail: mail})
+        //             if(deleteMail){
+        //                 console.log('Xoa mail thanh cong ' + mail);
+        //             }
+        //             countSucess++
+        //         }else{
+        //             countFailed++
+        //         }
+        //         if(i+1 == array.length){
+        //             res.status(200).json({
+        //                 message: 'Them du lieu thanh cong.',
+        //                 total: array.length,
+        //                 countSucess: countSucess,
+        //                 countFailed: countFailed,
+        //             })
+        //         }
+        //     }
+            //---xoa mail filter
+            // let deleteFilter = await Hotmail2FA.updateMany({status: 10}, {status: 1})
+            let deleteFilter323 = await Data_checked.updateMany({status: 10}, {status: 1})
+            if(deleteFilter323){
+                res.status(200).json({
+                    message: "update thanh cong"
+                })
             }
-            let hotmail = await Hotmail2FA.find({status: 2})
-            let mapHotMail = new Map()
-            for(let i = 0; i < hotmail.length; i++){
-                mapHotMail.set(hotmail[i].mail, "key")
-            }
-            let countSucess = 0, countFailed = 0
-            var readData = fs.readFileSync('data.txt', 'utf8')
-            var array = readData.split("\r\n")
-            for(let i = 0; i < array.length; i++){
-                let rss_data = array[i].split("|")
-                let mail = rss_data[0]
-                if(mapHotMail.has(mail)){
-                    let deleteMail = await Hotmail2FA.findOneAndDelete({mail: mail})
-                    if(deleteMail){
-                        console.log('Xoa mail thanh cong ' + mail);
-                    }
-                    countSucess++
-                }else{
-                    countFailed++
-                }
-                if(i+1 == array.length){
-                    res.status(200).json({
-                        message: 'Them du lieu thanh cong.',
-                        total: array.length,
-                        countSucess: countSucess,
-                        countFailed: countFailed,
-                    })
-                }
-            }
-            // //---xoa mail filter
-            // let deleteFilter = await Hotmail2FA.deleteMany({status: 4})
-            // if(deleteFilter){
-            //     res.status(200).json({
-            //         message: "Xoa thanh cong"
-            //     })
-            // }
             // return
             //----check trung du lieu
             // let data = await Data_checked.find({useStatus: 1})
