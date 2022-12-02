@@ -3,6 +3,7 @@ let Data_not_checked = require('../model/data_not_checked')
 let Hotmailnew = require('../model/hotmailnew')
 let Hotmail2FA = require('../model/hotmail_2fa')
 let Account = require('../model/account')
+let App = require('../model/app')
 let MsBuyer = require('../model/microsoft_buyer')
 let fs = require('fs')
 
@@ -21,7 +22,7 @@ module.exports = {
             let status = req.body.status
             let tags = req.body.tags
             console.log(code2fa);
-            if(code2fa == "" || mailReco == ""){
+            if(code2fa == "" ||mailReco == ""){
                 status = 3
             }
             let newData = new Hotmail2FA({
@@ -311,6 +312,7 @@ module.exports = {
     },
     test: async function(req,res){
         try {
+        
         //     let filter = {
         //         status: {
         //             $ne: 4
@@ -345,10 +347,10 @@ module.exports = {
         //             })
         //         }
         //     }
-            //---xoa mail filter
-            // let deleteFilter = await Hotmail2FA.updateMany({status: 10}, {status: 1})
-            let deleteFilter323 = await Data_checked.updateMany({status: 10}, {status: 1})
-            if(deleteFilter323){
+            // ---xoa mail filter
+            let updateMail = await Hotmail2FA.updateMany({status: 1}, {status: 2})
+            // let deleteFilter323 = await Data_checked.updateMany({status: 10}, {status: 1})
+            if(updateMail){
                 res.status(200).json({
                     message: "update thanh cong"
                 })
@@ -404,6 +406,7 @@ module.exports = {
             let countSucess = 0, countFailed = 0
             var readData = fs.readFileSync('data.txt', 'utf8')
             var array = readData.split("\r\n")
+            
             let rs_data = await Hotmail2FA.find()
             let map = new Map()
             for(let i = 0; i < rs_data.length; i++){
