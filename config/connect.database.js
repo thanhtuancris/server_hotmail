@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 async function connect(){
     try{
-        await mongoose.connect('mongodb://admin:Kh0ngc0dauem%3B@192.168.1.23:27017/Data?authSource=admin&readPreference=primary&directConnection=true&ssl=false', {
+        await mongoose.connect('mongodb://admin:Kh0ngc0dauem%3B@192.168.1.10:27017/Data?authSource=admin&readPreference=primary&directConnection=true&ssl=false', {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             // useFindAndModify: false,
