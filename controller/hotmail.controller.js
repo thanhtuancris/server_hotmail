@@ -6,6 +6,7 @@ let Account = require('../model/account')
 let App = require('../model/app')
 let MsBuyer = require('../model/microsoft_buyer')
 let fs = require('fs')
+const { ifError } = require('assert')
 
 
 module.exports = {
@@ -312,6 +313,56 @@ module.exports = {
     },
     test: async function(req,res){
         try {
+
+            ////---------------------------
+            let filter = {
+                status: 10
+            }
+            let findMailNew = await Hotmailnew.find(filter)
+            let findMailUsed = await Hotmail2FA.find()
+            let mailNew = new Map()
+            let mailUsed = new Map()
+            for(let i=0; i < findMailNew.length; i++){
+                mailNew.set(findMailNew[i].mail, "mailNews")
+            }
+            // for(let mail_new of mailNew.keys()){
+
+            // }
+            let arr = []
+            for(let i = 0; i< findMailUsed.length; i++){
+                if(findMailUsed[i].status == 4 && mailNew.has(findMailUsed[i].mail)){
+                    arr.push(findMailUsed[i])
+                }
+            }
+            res.status(200).json({
+                message: "OK",
+                data: arr.length
+            })
+            ////---------------------------
+            // let filter = {
+            //     status: 2, tags: []
+            // }
+            // let perPage = parseInt(req.body.perPage);
+            // let page = parseInt(req.body.page || 1);
+            // let skip = (perPage * page) - perPage;
+            // let findMail = await Hotmail2FA.find(filter).skip(skip).limit(perPage)
+            // let totalDocuments = await Hotmail2FA.countDocuments(filter);
+            // let totalPage = Math.ceil(totalDocuments / perPage);
+            // for(let i = 0; i < findMail.length; i++){
+            //     let udpateStatus = await Hotmail2FA.findOneAndUpdate({mail: findMail[i].mail}, {status: 6})
+            //     if( i+1 == findMail.length){
+            //         console.log("update thanh cong");
+            //         res.status(200).json({
+            //             message: "success",
+            //             totalDocuments: totalDocuments,
+            //             data: findMail,
+            //             page: page,
+            //             totalPage: totalPage,
+            //         })
+            //     }
+            // }
+            
+//-------------------------------------------------------------------------------
         
         //     let filter = {
         //         status: {
@@ -348,13 +399,13 @@ module.exports = {
         //         }
         //     }
             // ---xoa mail filter
-            let updateMail = await Hotmail2FA.updateMany({status: 1}, {status: 2})
-            // let deleteFilter323 = await Data_checked.updateMany({status: 10}, {status: 1})
-            if(updateMail){
-                res.status(200).json({
-                    message: "update thanh cong"
-                })
-            }
+            // let updateMail = await Hotmail2FA.updateMany({status: 1}, {status: 2})
+            // // let deleteFilter323 = await Data_checked.updateMany({status: 10}, {status: 1})
+            // if(updateMail){
+            //     res.status(200).json({
+            //         message: "update thanh cong"
+            //     })
+            // }
             // return
             //----check trung du lieu
             // let data = await Data_checked.find({useStatus: 1})
